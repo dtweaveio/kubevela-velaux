@@ -46,7 +46,7 @@ require (
 	github.com/hashicorp/hcl/v2 v2.17.0 // indirect
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/koding/websocketproxy v0.0.0-20181220232114-7ed82d81a28c
-	github.com/kubevela/pkg v1.8.1-0.20230613075152-2cef0c31b14e
+	github.com/kubevela/pkg v1.9.2
 	github.com/kubevela/prism v1.7.0-alpha.1.0.20230403030519-b7e45f7f842e
 	github.com/mitchellh/hashstructure/v2 v2.0.2 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
@@ -132,6 +132,7 @@ require (
 	github.com/perimeterx/marshmallow v1.1.4 // indirect
 	github.com/tjfoc/gmsm v1.3.2 // indirect
 	github.com/vbatts/tar-split v0.11.3 // indirect
+	go.uber.org/automaxprocs v1.5.3 // indirect
 )
 
 require (
