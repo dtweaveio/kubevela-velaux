@@ -29,7 +29,7 @@ var versionPrefix = "/api/v1"
 
 // GetAPIPrefix return the prefix of the api route path
 func GetAPIPrefix() []string {
-	return []string{versionPrefix, viewPrefix, "/v1"}
+	return []string{versionPrefix, viewPrefix, "/kapis", "/v1"}
 }
 
 // viewPrefix the path prefix for view page
@@ -96,6 +96,7 @@ func InitAPIBean() []interface{} {
 	RegisterAPI(NewUser())
 	RegisterAPI(NewSystemInfo())
 	RegisterAPI(NewCloudShellView())
+	RegisterAPI(NewResources())
 
 	// RBAC
 	RegisterAPI(NewRBAC())
