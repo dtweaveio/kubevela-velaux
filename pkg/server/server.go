@@ -97,6 +97,7 @@ type restServer struct {
 	dataStore     datastore.DataStore
 	PluginService service.PluginService `inject:""`
 	KubeClient    client.Client         `inject:"kubeClient"`
+	WatchClient   client.WithWatch      `inject:"watchClient"`
 	KubeConfig    *rest.Config          `inject:"kubeConfig"`
 	RBACService   service.RBACService   `inject:""`
 	UserService   service.UserService   `inject:""`
@@ -125,11 +126,18 @@ func (s *restServer) buildIoCContainer() error {
 	if err != nil {
 		return err
 	}
+
 	kubeClient, err := clients.GetKubeClient()
 	if err != nil {
 		return err
 	}
+
 	authClient := utils.NewAuthClient(kubeClient)
+
+	watchClient, err := clients.GetWatchClient()
+	if err != nil {
+		return err
+	}
 
 	var ds datastore.DataStore
 	switch s.cfg.Datastore.Type {
@@ -163,6 +171,9 @@ func (s *restServer) buildIoCContainer() error {
 
 	if err := s.beanContainer.ProvideWithName("kubeClient", authClient); err != nil {
 		return fmt.Errorf("fail to provides the kubeClient bean to the container: %w", err)
+	}
+	if err := s.beanContainer.ProvideWithName("watchClient", watchClient); err != nil {
+		return fmt.Errorf("fail to provides the watchClient bean to the container: %w", err)
 	}
 	if err := s.beanContainer.ProvideWithName("kubeConfig", kubeConfig); err != nil {
 		return fmt.Errorf("fail to provides the kubeConfig bean to the container: %w", err)
@@ -318,17 +329,17 @@ func (s *restServer) requestLog(req *restful.Request, resp *restful.Response, ch
 		return
 	}
 	start := time.Now()
-	c := utils.NewResponseCapture(resp.ResponseWriter)
-	resp.ResponseWriter = c
+	//c := utils.NewResponseCapture(resp.ResponseWriter)
+	//resp.ResponseWriter = c
 	chain.ProcessFilter(req, resp)
 	takeTime := time.Since(start)
 	klog.InfoS("request log",
 		"clientIP", pkgUtils.Sanitize(utils.ClientIP(req.Request)),
 		"path", pkgUtils.Sanitize(req.Request.URL.Path),
 		"method", req.Request.Method,
-		"status", c.StatusCode(),
+		"status", resp.StatusCode(),
 		"time", takeTime.String(),
-		"responseSize", len(c.Bytes()),
+		//"responseSize", len(resp..Bytes()),
 	)
 }
 
@@ -394,7 +405,7 @@ func (s *restServer) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 				return
 			}
 		}
-		// Rewrite to index.html, which means this route is handled by frontend.
+		// Rewrite to ws.html, which means this route is handled by frontend.
 		req.URL.Path = "/"
 		utils.NewFilterChain(func(req *http.Request, res http.ResponseWriter) {
 			s.staticFiles(res, req, BuildPublicPath)

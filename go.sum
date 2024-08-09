@@ -265,6 +265,8 @@ github.com/docker/go-units v0.5.0/go.mod h1:fgPhTUdO+D/Jk86RDLlptpiXQzgHJF7gydDD
 github.com/docker/libtrust v0.0.0-20160708172513-aabc10ec26b7 h1:UhxFibDNY/bfvqU5CAUmr9zpesgbU6SWc8/B4mflAE4=
 github.com/docker/libtrust v0.0.0-20160708172513-aabc10ec26b7/go.mod h1:cyGadeNEkKy96OOhEzfZl+yxihPEzKnqJwvfuSUqbZE=
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3ebgob9U8Nd0kOddGdZWjyMGR8Wziv+TBNwSE=
+github.com/dtweaveio/kubevela-pkg v1.9.2 h1:ZzBJVoFGMARojdVcNhaeEVJS8O0ECYi82dE1MyLyAGM=
+github.com/dtweaveio/kubevela-pkg v1.9.2/go.mod h1:/8XNwoP74BhuN5sjeEUwEqOELsowP1N3d2fYm0dWLCM=
 github.com/dustin/go-humanize v1.0.0 h1:VSnTsYCnlFHaM2/igO1h6X3HA71jcobQuxemgkq4zYo=
 github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
 github.com/elazarl/goproxy v0.0.0-20180725130230-947c36da3153/go.mod h1:/Zj4wYkgs4iZTTu3o/KG3Itv/qCCa8VVMlb3i9OVuzc=
@@ -696,8 +698,6 @@ github.com/kr/pty v1.1.8/go.mod h1:O1sed60cT9XZ5uDucP5qwvh+TE3NnUj51EiZO/lmSfw=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
 github.com/kr/text v0.2.0 h1:5Nx0Ya0ZqY2ygV366QzturHI13Jq95ApcVaJBhpS+AY=
 github.com/kr/text v0.2.0/go.mod h1:eLer722TekiGuMkidMxC/pM04lWEeraHUUmBw8l2grE=
-github.com/kubevela/pkg v1.9.2 h1:K6pGoJikf6l8vlfehewmb36hyToX0KpUaQP4NVET/S8=
-github.com/kubevela/pkg v1.9.2/go.mod h1:u/MGuFXVSECxvIWdTKS4AQs1H+USfAMQgi30BUrOb04=
 github.com/kubevela/prism v1.7.0-alpha.1.0.20230403030519-b7e45f7f842e h1:hc3ctkLfQVERra9IKDoAgMK4iMCY3XpXEJ0TfP9FhSQ=
 github.com/kubevela/prism v1.7.0-alpha.1.0.20230403030519-b7e45f7f842e/go.mod h1:bEPKTha7KhDhJAPXYBNAHTMRyqffDvf9UqWZV2BtQtI=
 github.com/kubevela/workflow v0.6.0 h1:fYXviOYD5zqHs3J61tNbM4HZ85EcZlPm7Fyz8Q5o9Fk=

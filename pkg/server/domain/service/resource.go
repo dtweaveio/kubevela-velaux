@@ -7,6 +7,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/apimachinery/pkg/watch"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"strings"
 )
@@ -19,6 +20,7 @@ type ResourceService interface {
 	DeleteResource(ctx context.Context, gvr schema.GroupVersionResource, namespace string, name string) error
 	GetResource(ctx context.Context, gvr schema.GroupVersionResource, namespace string, name string) (client.Object, error)
 	ListResources(ctx context.Context, gvr schema.GroupVersionResource, namespace string, query *resp.Query) (*resp.ListResult, error)
+	WatchResource(ctx context.Context, gvr schema.GroupVersionResource, opts ...client.ListOption) (watch.Interface, error)
 
 	Get(ctx context.Context, namespace, name string, object client.Object) error
 	List(ctx context.Context, namespace string, query *resp.Query, object client.ObjectList) (*resp.ListResult, error)
@@ -26,10 +28,12 @@ type ResourceService interface {
 	Delete(ctx context.Context, object client.Object) error
 	Update(ctx context.Context, old, new client.Object) error
 	Patch(ctx context.Context, old, new client.Object) error
+	Watch(ctx context.Context, obj client.ObjectList, opts ...client.ListOption) (watch.Interface, error)
 }
 
 type resourceService struct {
-	KubeClient client.Client `inject:"kubeClient"`
+	KubeClient  client.Client    `inject:"kubeClient"`
+	WatchClient client.WithWatch `inject:"watchClient"`
 }
 
 func NewResourceService() ResourceService {
@@ -155,6 +159,30 @@ func (h *resourceService) CreateResource(ctx context.Context, object client.Obje
 	return h.Create(ctx, object)
 }
 
+func (h *resourceService) WatchResource(ctx context.Context, gvr schema.GroupVersionResource, opts ...client.ListOption) (watch.Interface, error) {
+	var listObj client.ObjectList
+
+	gvk, err := h.getGVK(gvr)
+	if err != nil {
+		return nil, err
+	}
+
+	gvk = convertGVKToList(gvk)
+	if h.KubeClient.Scheme().Recognizes(gvk) {
+		gvkObject, err := h.KubeClient.Scheme().New(gvk)
+		if err != nil {
+			return nil, err
+		}
+		listObj = gvkObject.(client.ObjectList)
+	} else {
+		u := &unstructured.UnstructuredList{}
+		u.SetGroupVersionKind(gvk)
+		listObj = u
+	}
+
+	return h.WatchClient.Watch(ctx, listObj, opts...)
+}
+
 func convertGVKToList(gvk schema.GroupVersionKind) schema.GroupVersionKind {
 	if strings.HasSuffix(gvk.Kind, "List") {
 		return gvk
@@ -223,6 +251,10 @@ func (h *resourceService) Update(ctx context.Context, old, new client.Object) er
 
 func (h *resourceService) Patch(ctx context.Context, old, new client.Object) error {
 	return h.KubeClient.Patch(ctx, new, client.MergeFrom(old))
+}
+
+func (h *resourceService) Watch(ctx context.Context, obj client.ObjectList, opts ...client.ListOption) (watch.Interface, error) {
+	return h.WatchClient.Watch(ctx, obj, opts...)
 }
 
 func compareList(left, right runtime.Object, field resp.Field) bool {
