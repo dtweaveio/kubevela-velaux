@@ -87,6 +87,21 @@ func GetKubeClient() (client.Client, error) {
 	})
 }
 
+func GetWatchClient() (client.WithWatch, error) {
+	if kubeConfig == nil {
+		return nil, fmt.Errorf("please call SetKubeConfig first")
+	}
+
+	err := v1alpha1.AddToScheme(common.Scheme)
+	if err != nil {
+		return nil, err
+	}
+
+	return pkgmulticluster.NewWatchClient(kubeConfig, pkgmulticluster.ClientOptions{
+		Options: client.Options{Scheme: common.Scheme},
+	})
+}
+
 // GetKubeConfig create/get kube runtime config
 func GetKubeConfig() (*rest.Config, error) {
 	if kubeConfig == nil {
