@@ -17,4 +17,5 @@ limitations under the License.
 package bcode
 
 // ErrResourceNotSupported gateway is not supported
-var ErrResourceNotSupported = NewBcode(404, 20001, "gateway is not supported")
+var ErrResourceNotSupported = NewBcode(404, 21001, "gateway is not supported")
+var ErrResourceReadEntity = NewBcode(400, 21002, "post entity read error")

@@ -1,7 +1,17 @@
 package types
 
 import (
+	"fmt"
+	appsv1 "k8s.io/api/apps/v1"
+	autoscalingv2beta2 "k8s.io/api/autoscaling/v2beta2"
+	batchv1 "k8s.io/api/batch/v1"
+	corev1 "k8s.io/api/core/v1"
+	networkingv1 "k8s.io/api/networking/v1"
+	rbacv1 "k8s.io/api/rbac/v1"
+	storagev1 "k8s.io/api/storage/v1"
+	apiextv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 type ClientType string
@@ -81,6 +91,70 @@ var SupportedResources = map[string]schema.GroupVersionResource{
 	"horizontalpodautoscalers": {Group: "autoscaling", Version: "v2beta2", Resource: "horizontalpodautoscalers"},
 
 	"guestbooks": {Group: "samples.dtweave.io", Version: "v1", Resource: "guestbooks"},
+}
+
+func CreateResourceObject(resource string) (client.Object, error) {
+	switch resource {
+	case "namespaces":
+		return &corev1.Namespace{}, nil
+	case "nodes":
+		return &corev1.Node{}, nil
+	case "pods":
+		return &corev1.Pod{}, nil
+	case "services":
+		return &corev1.Service{}, nil
+	case "secrets":
+		return &corev1.Secret{}, nil
+	case "configmaps":
+		return &corev1.ConfigMap{}, nil
+	case "serviceaccounts":
+		return &corev1.ServiceAccount{}, nil
+	case "resourcequotas":
+		return &corev1.ResourceQuota{}, nil
+	case "persistentvolumeclaims":
+		return &corev1.PersistentVolumeClaim{}, nil
+	//
+	case "roles":
+		return &rbacv1.Role{}, nil
+	case "rolebindings":
+		return &rbacv1.RoleBinding{}, nil
+	case "clusterroles":
+		return &rbacv1.ClusterRole{}, nil
+	case "clusterrolebindings":
+		return &rbacv1.ClusterRoleBinding{}, nil
+	//
+	case "deployments":
+		return &appsv1.Deployment{}, nil
+	case "daemonsets":
+		return &appsv1.DaemonSet{}, nil
+	case "replicasets":
+		return &appsv1.ReplicaSet{}, nil
+	case "statefulsets":
+		return &appsv1.StatefulSet{}, nil
+	case "controllerrevisions":
+		return &appsv1.ControllerRevision{}, nil
+	//
+	case "storageclasses":
+		return &storagev1.StorageClass{}, nil
+	case "persistentvolumes":
+		return &corev1.PersistentVolume{}, nil
+	//
+	case "customresourcedefinitions":
+		return &apiextv1.CustomResourceDefinition{}, nil
+	//
+	case "jobs":
+		return &batchv1.Job{}, nil
+	case "cronjobs":
+		return &batchv1.CronJob{}, nil
+	//
+	case "ingresses":
+		return &networkingv1.Ingress{}, nil
+	//
+	case "horizontalpodautoscalers":
+		return &autoscalingv2beta2.HorizontalPodAutoscaler{}, nil
+	default:
+		return nil, fmt.Errorf("unsupported resource type: %v", resource)
+	}
 }
 
 const (
